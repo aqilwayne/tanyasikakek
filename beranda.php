@@ -1,4 +1,5 @@
 <?php
+require 'cek.php';
 require 'function.php';
 $getdata = mysqli_query($con, "SELECT * FROM user");
 $data = mysqli_fetch_array($getdata);

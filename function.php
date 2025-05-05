@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 $con = mysqli_connect("localhost", "root", "", "tanyakakek") or die("Couldn't connect");
 
 //CREATE - Tambah Pertanyaan

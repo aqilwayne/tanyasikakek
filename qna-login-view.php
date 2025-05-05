@@ -1,5 +1,4 @@
 <?php
-session_start();
 require 'function.php';
 
 $getdata = mysqli_query($con, "SELECT * FROM user");

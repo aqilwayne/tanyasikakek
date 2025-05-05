@@ -2,19 +2,24 @@
 require 'function.php';
 
 if(isset($_POST['login'])){
-    $username = $_POST['username'];
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $cekdatabase = mysqli_query($con, "SELECT * FROM user WHERE username = '$username' AND email = '$email' AND password = '$password'");
+    $cekdatabase = mysqli_query($con, "SELECT * FROM user WHERE email = '$email' AND password = '$password'");
     $hitung = mysqli_num_rows($cekdatabase);
 
     if($hitung > 0){
         $_SESSION['log']='True';
-        header("location:qna.php");
+        header("location:beranda.php");
     } else {
         echo("location:login.php");
     }
+}
+
+if(!isset($_SESSION['login'])){
+}
+else{
+    header('location:beranda.php');
 }
 ?>
 
@@ -33,12 +38,7 @@ if(isset($_POST['login'])){
         <div class="box form-box">
             <img src="img/logo.png" alt="Tanya Si Kakek" class="logo-kakek">
             <h2 class="judul-login">Selamat datang kembali!</h2>
-            <form action="" method="post">
-                <div class="field input">
-                    <label for="email">Username</label>
-                    <input type="text" name="username" id="username" autocomplete="off" required>
-                </div>
-
+            <form method="post">
                 <div class="field input">
                     <label for="email">Email</label>
                     <input type="text" name="email" id="email" autocomplete="off" required>

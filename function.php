@@ -3,7 +3,6 @@ session_start();
 
 $con = mysqli_connect("localhost", "root", "", "tanyakakek") or die("Couldn't connect");
 
-//CREATE - Tambah Pertanyaan
 if(isset($_POST['unggah-pertanyaan'])){
     $id_user = $_POST['id_user'];
     $judul = $_POST['judul'];
@@ -19,7 +18,6 @@ if(isset($_POST['unggah-pertanyaan'])){
     }
 }
 
-//DELETE - Hapus Pertanyaan
 if(isset($_POST['deletequestion'])){
     $id_question = $_POST['id_question'];
 

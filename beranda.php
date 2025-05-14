@@ -1,11 +1,15 @@
 <?php
-require 'cek.php';
-require 'function.php';
-$getdata = mysqli_query($con, "SELECT * FROM user");
-$data = mysqli_fetch_array($getdata);
+session_start();
+$isLoggedIn = isset($_SESSION['log']) && $_SESSION['log'] === 'True';
 
-$username = $data['username'];
+$username = '';
+if ($isLoggedIn && isset($_SESSION['username'])) {
+    $username = $_SESSION['username'];
+}
+
+$currentPage = basename($_SERVER['PHP_SELF']);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +28,7 @@ $username = $data['username'];
             <img src="img/logo.png" alt="logo" class="logo">
         </div>
         <div class="search-box">
-            <form action="">
+            <form action="search.php" method="GET">
                 <input type="text" name="search" id="srch" placeholder="Apa yang kamu cari?">
                 <button type="submit"><i class="fa fa-search"></i></button>
             </form>
@@ -32,50 +36,49 @@ $username = $data['username'];
         <div id="menu-icon" class="menu-icon">
             <i class="ph ph-list"></i>
         </div>
-        <ul id="menu-list" class="hidden">
+        <ul id="menu-list" class="nav-menu">
             <li>
-                <a href="beranda.php">Beranda</a>
+                <a href="beranda.php" class="<?php echo ($currentPage == 'beranda.php') ? 'active' : ''; ?>">Beranda</a>
             </li>
             <li>
-                <?php
-                if($_SESSION['log'] = 'True'){
-                ?>
-                <a href="qna-login-view.php">Tanya & Jawab</a>
-                <?php
-                } else {
-                ?>
-                <a href="qna-nonlogin-view.php">Tanya & Jawab</a>
-                <?php
-                };
-                ?>
+                <?php if($isLoggedIn): ?>
+                    <a href="qna-login-view.php" class="<?php echo ($currentPage == 'qna-login-view.php') ? 'active' : ''; ?>">Tanya & Jawab</a>
+                <?php else: ?>
+                    <a href="qna-nonlogin-view.php" class="<?php echo ($currentPage == 'qna-nonlogin-view.php') ? 'active' : ''; ?>">Tanya & Jawab</a>
+                <?php endif; ?>
             </li>
             <li>
-                <a href="#">Cerita Kakek</a>
+                <a href="cerita.php" class="<?php echo ($currentPage == 'cerita-kakek.php') ? 'active' : ''; ?>">Cerita Kakek</a>
             </li>
         </ul>
         <div class="profile-section">
-            <?php if($_SESSION['log'] = 'True') { ?>
+            <?php if($isLoggedIn): ?>
                 <i class="fa fa-bell notification-icon">
                     <span class="badge"></span>
                 </i>
-                <div class="profile-hidden">
-                    <div class="profile-container">
-                        <img src="img/user.png" alt="Profile" class="profile-img">
-                        <div class="profile-info">
-                            <span class="profile-text">Profil</span>
-                            <span class="profile-name">
-                                <?=$username;?>
-                            </span>
-                        </div>
-                    </div>
+                <?php if (isset($_SESSION['username'])): ?>
+            <div class="profile-container" id="profile-container">
+                <img src="img/user.png" alt="Profile" class="profile-img">
+                <div class="profile-info">
+                    <span class="profile-text">Profil</span>
+                    <span class="profile-name">
+                        <?php echo htmlspecialchars($_SESSION['username']); ?>
+                    </span>
                 </div>
-            <?php 
-            } 
-            else{ ?>
+                <div class="profile-dropdown" id="profile-dropdown">
+                    <ul>
+                        <li><a href="profile.php"><i class="fa fa-user"></i> Lihat Profil</a></li>
+                        <li><a href="logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        <?php else: ?>
+            <a href="login.php" class="btn-login">Login</a>
+        <?php endif; ?>
+
+            <?php else: ?>
                 <a href="login.php" class="login-button">Login</a>
-            <?php 
-        } 
-        ?>
+            <?php endif; ?>
         </div>
     </nav>
 
@@ -212,5 +215,31 @@ $username = $data['username'];
     </footer>
 
     <script src="beranda-script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuIcon = document.getElementById('menu-icon');
+            const menuList = document.getElementById('menu-list');
+            
+            menuIcon.addEventListener('click', function() {
+                menuList.classList.toggle('hidden');
+            });
+
+            const profileContainer = document.getElementById('profile-container');
+            const profileDropdown = document.getElementById('profile-dropdown');
+            
+            if (profileContainer) {
+                profileContainer.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    profileDropdown.classList.toggle('show');
+                });
+
+                document.addEventListener('click', function() {
+                    if (profileDropdown.classList.contains('show')) {
+                        profileDropdown.classList.remove('show');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

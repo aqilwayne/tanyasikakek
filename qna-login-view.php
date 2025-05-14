@@ -1,6 +1,9 @@
 <?php
 require 'function.php';
 
+// Cek apakah user sudah login
+$isLoggedIn = isset($_SESSION['id_user']);
+
 $getdata = mysqli_query($con, "SELECT * FROM user");
 $data = mysqli_fetch_array($getdata);
 
@@ -73,6 +76,8 @@ $username = $data['username'];
                     </ul>
                 </div>
             </div>
+            <?php endif; ?> <!-- ✅ Tutup if (isset($_SESSION['username'])) -->
+    <?php endif; ?> <!-- ✅ Tutup if($isLoggedIn) -->
         </div>
     </nav>
 
@@ -167,8 +172,6 @@ $username = $data['username'];
                 </div>
             </form>
         </div>
-
-
             <?php
             $getdataquestion = mysqli_query($con, "SELECT u.id_user, u.username, q.judul, q.pertanyaan, q.tanggal, q.id_question FROM question q JOIN user u ON u.id_user = q.id_user");
 
@@ -212,32 +215,37 @@ $username = $data['username'];
                     </div>
                 </div>
             <?php
-            };
-            if(!$getdataquestion){
-                echo "Query error: " . mysqli_error($con);
             }
+        if(!$getdataquestion){
+            echo "Query error: " . mysqli_error($con);
+        }
             ?>
-    </div>
+</div> <!-- Penutup div jika ada sebelumnya -->
+
 <!-- Delete Modal -->
-    <div class="modal fade" id="delete">
-        <div class="modal-dialog">
-            <div class="modal-content">
+<div class="modal fade" id="delete">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Hapus Pertanyaan</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <!-- Modal body -->
-                <form method="post">
-                    <div class="modal-body">
-                            Anda yakin ingin menghapus <?=$judul;?><br><br>
-                        <input type="hidden" name="id_question" value="<?=$id_question;?>">
-                        <button class="btn btn-danger" type="submit"  name="deletequestion">Hapus</button>
-                    </div>
-                </form>
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Hapus Pertanyaan</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
+
+            <!-- Modal body -->
+            <form method="post">
+                <div class="modal-body">
+                    Anda yakin ingin menghapus <strong><?= htmlspecialchars($judul); ?></strong>?
+                    <br><br>
+                    <input type="hidden" name="id_question" value="<?= htmlspecialchars($id_question); ?>">
+                    <button class="btn btn-danger" type="submit" name="deletequestion">Hapus</button>
+                </div>
+            </form>
+
         </div>
-    </body>
+    </div>
+</div>
+
+</body>
 </html>

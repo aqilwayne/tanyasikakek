@@ -1,6 +1,3 @@
-<?php
-require 'cek.php';
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +14,7 @@ require 'cek.php';
 
             <?php
             
-            include("php/config.php");
+            include("config.php");
             if(isset(($_POST['submit']))){
                 $username = $_POST['username'];
                 $email = $_POST['email'];
@@ -28,19 +25,15 @@ require 'cek.php';
                 if(mysqli_num_rows($verify_query) !=0 ){
                     echo "<div class = 'message>
                             <p>Email ini sudah pernah digunakan, coba yang lain</p>
-                          </div><br>";
+                        </div><br>";
                     echo "<a href ='javascript:self.history.back()'><button class='btn'>Kembali</button></a>";
                 }
-                else{
-
+                else {
                     mysqli_query($con, "INSERT INTO user(Username, Email, Password, poin) VALUES('$username', '$email', '$password', 0)") or die("Query Error: " . mysqli_error($con));
-
-                    echo "<div class = 'message>
-                            <p>Registrasi berhasil</p>
-                          </div> <br>";
-                    echo "<a href ='login.php'><button class='btn'>Masuk Sekarang</button></a>";
-
-                }
+                
+                    header("Location: login.php");
+                    exit;
+                }                
             }else{
 
             ?>

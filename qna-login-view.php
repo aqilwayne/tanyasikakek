@@ -8,7 +8,7 @@ $username = $data['username'];
 ?>
 
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,7 +29,7 @@ $username = $data['username'];
             <img src="img/logo.png" alt="logo" class="logo">
         </div>
         <div class="search-box">
-            <form action="">
+            <form action="search.php" method="GET">
                 <input type="text" name="search" id="srch" placeholder="Apa yang kamu cari?">
                 <button type="submit"><i class="fa fa-search"></i></button>
             </form>
@@ -37,33 +37,43 @@ $username = $data['username'];
         <div id="menu-icon" class="menu-icon">
             <i class="ph ph-list"></i>
         </div>
-        <ul id="menu-list" class="hidden">
+        <ul id="menu-list" class="nav-menu">
             <li>
-                <a href="/beranda.php">Beranda</a>
+                <a href="beranda.php" class="<?php echo ($currentPage == 'beranda.php') ? 'active' : ''; ?>">Beranda</a>
             </li>
             <li>
-                <a href="/q&a.php">Tanya & Jawab</a>
+                <?php if($isLoggedIn): ?>
+                    <a href="qna-login-view.php" class="<?php echo ($currentPage == 'qna-login-view.php') ? 'active' : ''; ?>">Tanya & Jawab</a>
+                <?php else: ?>
+                    <a href="qna-nonlogin-view.php" class="<?php echo ($currentPage == 'qna-nonlogin-view.php') ? 'active' : ''; ?>">Tanya & Jawab</a>
+                <?php endif; ?>
             </li>
             <li>
-                <a href="#">Cerita Kakek</a>
+                <a href="cerita.php" class="<?php echo ($currentPage == 'cerita-kakek.php') ? 'active' : ''; ?>">Cerita Kakek</a>
             </li>
         </ul>
         <div class="profile-section">
-            <i class="fa fa-bell notification-icon">
-                <span class="badge"></span>
-            </i>
-            <div class="profile-hidden">
-                <div class="profile-container">
-                    <img src="img/user.png" alt="Profile" class="profile-img">
-                    <div class="profile-info">
-                        <span class="profile-text">Profil</span>
-                        <span class="profile-name">
-                            <?=$username; ?>
-                        </span>
-                    </div>
+            <?php if($isLoggedIn): ?>
+                <i class="fa fa-bell notification-icon">
+                    <span class="badge"></span>
+                </i>
+                <?php if (isset($_SESSION['username'])): ?>
+            <div class="profile-container" id="profile-container">
+                <img src="img/user.png" alt="Profile" class="profile-img">
+                <div class="profile-info">
+                    <span class="profile-text">Profil</span>
+                    <span class="profile-name">
+                        <?php echo htmlspecialchars($_SESSION['username']); ?>
+                    </span>
+                </div>
+                <div class="profile-dropdown" id="profile-dropdown">
+                    <ul>
+                        <li><a href="profile.php"><i class="fa fa-user"></i> Lihat Profil</a></li>
+                        <li><a href="logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
+                    </ul>
                 </div>
             </div>
-            </div>
+        </div>
     </nav>
 
     <div class="container">
@@ -208,27 +218,26 @@ $username = $data['username'];
             }
             ?>
     </div>
+<!-- Delete Modal -->
+    <div class="modal fade" id="delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Hapus Pertanyaan</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <form method="post">
+                    <div class="modal-body">
+                            Anda yakin ingin menghapus <?=$judul;?><br><br>
+                        <input type="hidden" name="id_question" value="<?=$id_question;?>">
+                        <button class="btn btn-danger" type="submit"  name="deletequestion">Hapus</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </body>
-                                            <!-- Delete Modal -->
-                                            <div class="modal fade" id="delete">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-
-                                                <!-- Modal Header -->
-                                                <div class="modal-header">
-                                                    <h4 class="modal-title">Hapus Pertanyaan</h4>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-
-                                                <!-- Modal body -->
-                                                <form method="post">
-                                                <div class="modal-body">
-                                                    Anda yakin ingin menghapus <?=$judul;?><br><br>
-                                                    <input type="hidden" name="id_question" value="<?=$id_question;?>">
-                                                    <button class="btn btn-danger" type="submit"  name="deletequestion">Hapus</button>
-                                                </div>
-                                                </form>
-
-                                                </div>
-                                            </div>
 </html>
